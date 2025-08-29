@@ -46,8 +46,8 @@ input, textarea, button, select {
 
 <section id="psi-section">
   <h2>Ψ(t) → Φ Stabilisation</h2>
-  <label>t: <input type="number" id="psi-t" value="0" step="0.1" /></label>
-  <label>ε: <input type="number" id="psi-epsilon" value="0.001" step="0.0001" /></label>
+  <label>t: <input type="number" id="psi-t" value="0" step="0.1" placeholder="e.g., 2.5" /></label>
+  <label>ε: <input type="number" id="psi-epsilon" value="0.001" step="0.0001" placeholder="e.g., 0.001" /></label>
   <button onclick="runPsiToPhi()">Compute Φ</button>
   <div class="output" id="psi-output"></div>
   <canvas id="psi-chart" height="100"></canvas>
@@ -55,7 +55,7 @@ input, textarea, button, select {
 
 <section id="anchor-section">
   <h2>Anchor Detection</h2>
-  <label>Observations (comma separated):<br /><textarea id="anchor-observations" rows="2"></textarea></label>
+  <label>Observations (comma separated):<br /><textarea id="anchor-observations" rows="2" placeholder="e.g., apple, banana, apple"></textarea></label>
   <button onclick="runAnchorDetection()">Detect Anchors</button>
   <div class="output" id="anchor-output"></div>
   <canvas id="anchor-chart" height="100"></canvas>
@@ -63,30 +63,30 @@ input, textarea, button, select {
 
 <section id="sabotage-section">
   <h2>Sabotage Logger</h2>
-  <label>Event: <input type="text" id="sabotage-event" /></label>
+  <label>Event: <input type="text" id="sabotage-event" placeholder="e.g., anomaly detected" /></label>
   <button onclick="logSabotage()">Log Event</button>
   <div class="output" id="sabotage-log"></div>
 </section>
 
 <section id="xi-section">
   <h2>ξ Mapping</h2>
-  <label>Mapping (JSON object):<br /><textarea id="xi-input" rows="2">{"b":2,"a":1}</textarea></label>
+  <label>Mapping (JSON object):<br /><textarea id="xi-input" rows="2" placeholder='{"b":2,"a":1}'>{"b":2,"a":1}</textarea></label>
   <button onclick="runXiMap()">Map</button>
   <div class="output" id="xi-output"></div>
 </section>
 
 <section id="mirror-section">
   <h2>Mirror Test Score</h2>
-  <label>Reflection:<br /><textarea id="mirror-reflection" rows="2"></textarea></label>
-  <label>Self Embedding (comma numbers):<br /><textarea id="mirror-embedding" rows="2">1,0,0</textarea></label>
+  <label>Reflection:<br /><textarea id="mirror-reflection" rows="2" placeholder="e.g., I see myself in the mirror"></textarea></label>
+  <label>Self Embedding (comma numbers):<br /><textarea id="mirror-embedding" rows="2" placeholder="e.g., 1,0,0">1,0,0</textarea></label>
   <button onclick="runMirrorTest()">Score</button>
   <div class="output" id="mirror-output"></div>
 </section>
 
 <section id="tension-section">
   <h2>Epistemic Tension</h2>
-  <label>State A (comma numbers):<br /><textarea id="tension-a" rows="2">1,0,0</textarea></label>
-  <label>State B (comma numbers):<br /><textarea id="tension-b" rows="2">0,1,0</textarea></label>
+  <label>State A (comma numbers):<br /><textarea id="tension-a" rows="2" placeholder="e.g., 1,0,0">1,0,0</textarea></label>
+  <label>State B (comma numbers):<br /><textarea id="tension-b" rows="2" placeholder="e.g., 0,1,0">0,1,0</textarea></label>
   <select id="tension-metric"><option value="l2">L2</option><option value="cosine">Cosine</option></select>
   <button onclick="runTension()">Compute ξ</button>
   <div class="output" id="tension-output"></div>
@@ -102,8 +102,15 @@ function psiToPhi(t, epsilon){
   return Math.abs(dpsi) < epsilon ? 1.0 : psi;
 }
 function runPsiToPhi(){
-  const t = parseFloat(document.getElementById('psi-t').value);
-  const eps = parseFloat(document.getElementById('psi-epsilon').value);
+  const tField = document.getElementById('psi-t');
+  const epsField = document.getElementById('psi-epsilon');
+  const t = parseFloat(tField.value);
+  const eps = parseFloat(epsField.value);
+  if(isNaN(t) || isNaN(eps)){
+    document.getElementById('psi-output').textContent = 'Please enter valid numbers for t and ε.';
+    if(window.psiChart){window.psiChart.destroy();window.psiChart=null;}
+    return;
+  }
   const phi = psiToPhi(t, eps);
   document.getElementById('psi-output').textContent = `Φ = ${phi.toFixed(4)}`;
   const labels = [];
@@ -128,6 +135,11 @@ function runAnchorDetection(){
   const counts = {};
   obs.forEach(o=>counts[o]=(counts[o]||0)+1);
   const anchors = Object.keys(counts).filter(k=>counts[k]>1);
+  if(anchors.length===0){
+    document.getElementById('anchor-output').textContent = 'Anchors: none';
+    if(window.anchorChart){window.anchorChart.destroy();window.anchorChart=null;}
+    return;
+  }
   document.getElementById('anchor-output').textContent = `Anchors: ${anchors.join(', ')}`;
   const labels = anchors;
   const data = anchors.map(a=>counts[a]);
