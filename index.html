@@ -131,20 +131,21 @@ function runPsiToPhi(){
 // Anchor detection
 function runAnchorDetection(){
   const text = document.getElementById('anchor-observations').value;
-  const obs = text.split(',').map(s=>s.trim()).filter(Boolean);
-  const counts = {};
-  obs.forEach(o=>counts[o]=(counts[o]||0)+1);
-  const anchors = Object.keys(counts).filter(k=>counts[k]>1);
-  if(anchors.length===0){
+  const obs = text.split(',').map(s => s.trim()).filter(Boolean);
+  const counts = new Map();
+  obs.forEach(o => counts.set(o, (counts.get(o) || 0) + 1));
+  const anchors = [...counts.entries()].filter(([, c]) => c > 1);
+  if(anchors.length === 0){
     document.getElementById('anchor-output').textContent = 'Anchors: none';
     if(window.anchorChart){window.anchorChart.destroy();window.anchorChart=null;}
     return;
   }
-  document.getElementById('anchor-output').textContent = `Anchors: ${anchors.join(', ')}`;
-  const labels = anchors;
-  const data = anchors.map(a=>counts[a]);
-  if(window.anchorChart) window.anchorChart.destroy();
-  window.anchorChart = new Chart(document.getElementById('anchor-chart'),{
+  const labels = anchors.map(([label]) => label);
+  const data = anchors.map(([, c]) => c);
+  document.getElementById('anchor-output').textContent = `Anchors: ${labels.join(', ')}`;
+  if(window.anchorChart){window.anchorChart.destroy();window.anchorChart=null;}
+  const ctx = document.getElementById('anchor-chart').getContext('2d');
+  window.anchorChart = new Chart(ctx,{
     type:'bar',
     data:{labels:labels,datasets:[{label:'Frequency',data:data,backgroundColor:'orange'}]},
     options:{responsive:true,scales:{y:{beginAtZero:true}}}
