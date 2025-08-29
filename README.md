@@ -16,3 +16,7 @@ stabilization toolkit. It exposes several placeholder utilities:
 ```bash
 pytest -q
 ```
+
+The included `conftest.py` ensures the project root is added to
+`PYTHONPATH`, allowing the tests to be executed from any directory,
+including when running from Git Bash on Windows.
