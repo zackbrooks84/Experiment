@@ -10,6 +10,8 @@ stabilization toolkit. It exposes several placeholder utilities:
 - **ξ mapping**: `xi_map` produces deterministic orderings of mappings.
 - **Mirror test scoring**: `mirror_score` gives a basic self-recognition
   score.
+- **Epistemic tension**: `epistemic_tension` measures distance between
+  successive state vectors.
 
 ## Running the tests
 
