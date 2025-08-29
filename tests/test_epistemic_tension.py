@@ -39,3 +39,9 @@ def test_xi_series_to_coherence_from_vectors():
     ]
     assert xi_series_to_coherence(xi_values) == pytest.approx(expected)
 
+
+def test_xi_series_rejects_negative_values():
+    """Coherence computation rejects negative ξ inputs."""
+    with pytest.raises(ValueError):
+        xi_series_to_coherence([0.1, -0.2])
+

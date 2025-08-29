@@ -2,6 +2,7 @@ from ai_identity.memory import MemoryStore, ChatHistory
 
 
 def test_memory_recall_after_context_break():
+    """Messages persist in memory even after starting a new chat."""
     store = MemoryStore()
     chat = ChatHistory(memory=store)
     chat.add_message("hello")
