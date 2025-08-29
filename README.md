@@ -1,7 +1,12 @@
 # AI Identity Stabilization Toolkit
 
 This repository contains a tiny, self-contained example of an AI identity
-stabilization toolkit. It exposes several placeholder utilities:
+stabilization toolkit.
+
+This repo provides empirical instrumentation of recursive stabilization (Ψ(t) → Φ),
+extending the Δ⨀Ψ∇ framework by adding reproducible metrics.
+
+It exposes several placeholder utilities:
 
 - **Ψ(t) → Φ model**: `psi_to_phi` performs a trivial state
   stabilization.
