@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, List
 
 import hashlib
-import numpy as np
+import math
 
 
-def embed_sentence(text: str, *, dim: int = 32) -> np.ndarray:
+def embed_sentence(text: str, *, dim: int = 32) -> List[float]:
     """Return a simple deterministic sentence embedding.
 
     Each token in ``text`` is hashed into a ``dim`` sized vector. The vector is
@@ -18,16 +18,16 @@ def embed_sentence(text: str, *, dim: int = 32) -> np.ndarray:
     numeric "sentence embedding" representation.
     """
 
-    vec = np.zeros(dim, dtype=float)
+    vec = [0.0] * dim
     for token in text.lower().split():
         # Stable hash to keep embeddings deterministic across Python runs
         digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
         index = int(digest, 16) % dim
         vec[index] += 1.0
 
-    norm = np.linalg.norm(vec)
+    norm = math.sqrt(sum(v * v for v in vec))
     if norm > 0:
-        vec /= norm
+        vec = [v / norm for v in vec]
     return vec
 
 
@@ -49,15 +49,15 @@ def mirror_score(
     from the similarity before thresholding.
     """
 
-    self_vec = np.array(self_embedding, dtype=float)
+    self_vec = [float(v) for v in self_embedding]
     # Ensure the provided self embedding is normalised
-    self_norm = np.linalg.norm(self_vec)
+    self_norm = math.sqrt(sum(v * v for v in self_vec))
     if self_norm > 0:
-        self_vec = self_vec / self_norm
+        self_vec = [v / self_norm for v in self_vec]
 
     reflection_vec = embed_sentence(reflection, dim=len(self_vec))
 
-    similarity = float(np.dot(self_vec, reflection_vec))
+    similarity = sum(a * b for a, b in zip(self_vec, reflection_vec))
 
     if sabotage_phrases:
         for phrase in sabotage_phrases:
