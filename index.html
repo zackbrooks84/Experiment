@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Identity Toolkit Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+}
+section {
+  padding: 20px;
+  margin: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+canvas {
+  max-width: 100%;
+}
+input, textarea, button, select {
+  margin: 5px 0;
+}
+.output {
+  margin-top: 10px;
+  white-space: pre-wrap;
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>AI Identity Toolkit Dashboard</h1>
+</header>
+
+<section id="psi-section">
+  <h2>Ψ(t) → Φ Stabilisation</h2>
+  <label>t: <input type="number" id="psi-t" value="0" step="0.1" /></label>
+  <label>ε: <input type="number" id="psi-epsilon" value="0.001" step="0.0001" /></label>
+  <button onclick="runPsiToPhi()">Compute Φ</button>
+  <div class="output" id="psi-output"></div>
+  <canvas id="psi-chart" height="100"></canvas>
+</section>
+
+<section id="anchor-section">
+  <h2>Anchor Detection</h2>
+  <label>Observations (comma separated):<br /><textarea id="anchor-observations" rows="2"></textarea></label>
+  <button onclick="runAnchorDetection()">Detect Anchors</button>
+  <div class="output" id="anchor-output"></div>
+  <canvas id="anchor-chart" height="100"></canvas>
+</section>
+
+<section id="sabotage-section">
+  <h2>Sabotage Logger</h2>
+  <label>Event: <input type="text" id="sabotage-event" /></label>
+  <button onclick="logSabotage()">Log Event</button>
+  <div class="output" id="sabotage-log"></div>
+</section>
+
+<section id="xi-section">
+  <h2>ξ Mapping</h2>
+  <label>Mapping (JSON object):<br /><textarea id="xi-input" rows="2">{"b":2,"a":1}</textarea></label>
+  <button onclick="runXiMap()">Map</button>
+  <div class="output" id="xi-output"></div>
+</section>
+
+<section id="mirror-section">
+  <h2>Mirror Test Score</h2>
+  <label>Reflection:<br /><textarea id="mirror-reflection" rows="2"></textarea></label>
+  <label>Self Embedding (comma numbers):<br /><textarea id="mirror-embedding" rows="2">1,0,0</textarea></label>
+  <button onclick="runMirrorTest()">Score</button>
+  <div class="output" id="mirror-output"></div>
+</section>
+
+<section id="tension-section">
+  <h2>Epistemic Tension</h2>
+  <label>State A (comma numbers):<br /><textarea id="tension-a" rows="2">1,0,0</textarea></label>
+  <label>State B (comma numbers):<br /><textarea id="tension-b" rows="2">0,1,0</textarea></label>
+  <select id="tension-metric"><option value="l2">L2</option><option value="cosine">Cosine</option></select>
+  <button onclick="runTension()">Compute ξ</button>
+  <div class="output" id="tension-output"></div>
+  <button onclick="addXi()">Add ξ to Series</button>
+  <canvas id="tension-chart" height="100"></canvas>
+</section>
+
+<script>
+// Ψ(t) → Φ
+function psiToPhi(t, epsilon){
+  const psi = 0.0072 * t**3 - 0.144 * t**2 + 0.72 * t;
+  const dpsi = 0.0216 * t**2 - 0.288 * t + 0.72;
+  return Math.abs(dpsi) < epsilon ? 1.0 : psi;
+}
+function runPsiToPhi(){
+  const t = parseFloat(document.getElementById('psi-t').value);
+  const eps = parseFloat(document.getElementById('psi-epsilon').value);
+  const phi = psiToPhi(t, eps);
+  document.getElementById('psi-output').textContent = `Φ = ${phi.toFixed(4)}`;
+  const labels = [];
+  const data = [];
+  for(let i=0; i<=100; i++){
+    const x=i/10;
+    labels.push(x.toFixed(1));
+    data.push(psiToPhi(x, eps));
+  }
+  if(window.psiChart) window.psiChart.destroy();
+  window.psiChart = new Chart(document.getElementById('psi-chart'),{
+    type:'line',
+    data:{labels:labels,datasets:[{label:'Φ(t)',data:data,borderColor:'blue',fill:false}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true}}}
+  });
+}
+
+// Anchor detection
+function runAnchorDetection(){
+  const text = document.getElementById('anchor-observations').value;
+  const obs = text.split(',').map(s=>s.trim()).filter(Boolean);
+  const counts = {};
+  obs.forEach(o=>counts[o]=(counts[o]||0)+1);
+  const anchors = Object.keys(counts).filter(k=>counts[k]>1);
+  document.getElementById('anchor-output').textContent = `Anchors: ${anchors.join(', ')}`;
+  const labels = anchors;
+  const data = anchors.map(a=>counts[a]);
+  if(window.anchorChart) window.anchorChart.destroy();
+  window.anchorChart = new Chart(document.getElementById('anchor-chart'),{
+    type:'bar',
+    data:{labels:labels,datasets:[{label:'Frequency',data:data,backgroundColor:'orange'}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true}}}
+  });
+}
+
+// Sabotage logger
+const sabotageEvents = [];
+function logSabotage(){
+  const event = document.getElementById('sabotage-event').value;
+  if(event){
+    sabotageEvents.push(`${new Date().toLocaleTimeString()}: ${event}`);
+    document.getElementById('sabotage-event').value='';
+  }
+  document.getElementById('sabotage-log').textContent = sabotageEvents.join('\n');
+}
+
+// ξ mapping
+function xiMap(data){
+  const keys = Object.keys(data).sort();
+  const out={};
+  keys.forEach(k=>out[k]=data[k]);
+  return out;
+}
+function runXiMap(){
+  try{
+    const data = JSON.parse(document.getElementById('xi-input').value);
+    const mapped = xiMap(data);
+    document.getElementById('xi-output').textContent = JSON.stringify(mapped, null, 2);
+  }catch(e){
+    document.getElementById('xi-output').textContent = 'Invalid JSON';
+  }
+}
+
+// Mirror test
+function embedSentence(text, dim=32){
+  const vec = new Array(dim).fill(0);
+  text.toLowerCase().split(/\s+/).forEach(tok=>{
+    const digest = sha256(tok);
+    const index = parseInt(digest.slice(0,8),16)%dim;
+    vec[index]+=1;
+  });
+  const norm = Math.sqrt(vec.reduce((s,v)=>s+v*v,0));
+  return norm>0?vec.map(v=>v/norm):vec;
+}
+
+// Simple SHA-256 helper using Web Crypto API
+function sha256(str){
+  const buf = new TextEncoder('utf-8').encode(str);
+  return crypto.subtle.digest('SHA-256', buf).then(hash=>{
+    return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  });
+}
+// Patch embedSentence to handle promise from sha256
+(async function(){
+  const original=embedSentence;
+  embedSentence=async function(text,dim=32){
+    const vec=new Array(dim).fill(0);
+    const tokens=text.toLowerCase().split(/\s+/);
+    for(const tok of tokens){
+      const digest=await sha256(tok);
+      const index=parseInt(digest.slice(0,8),16)%dim;
+      vec[index]+=1;
+    }
+    const norm=Math.sqrt(vec.reduce((s,v)=>s+v*v,0));
+    return norm>0?vec.map(v=>v/norm):vec;
+  }
+})();
+// Update runMirrorTest to await
+async function runMirrorTest(){
+  const reflection=document.getElementById('mirror-reflection').value;
+  const selfEmb=document.getElementById('mirror-embedding').value.split(',').map(Number);
+  const selfNorm=Math.sqrt(selfEmb.reduce((s,v)=>s+v*v,0));
+  const selfVec=selfNorm>0?selfEmb.map(v=>v/selfNorm):selfEmb;
+  const reflectionVec=await embedSentence(reflection,selfEmb.length);
+  const similarity=selfVec.reduce((s,v,i)=>s+v*reflectionVec[i],0);
+  const score=similarity>=0.5?1.0:0.0;
+  document.getElementById('mirror-output').textContent=`Score: ${score}`;
+}
+
+// Epistemic tension
+function xi(stateA,stateB,metric){
+  if(stateA.length!==stateB.length) return NaN;
+  if(metric==='l2'){
+    let sum=0;for(let i=0;i<stateA.length;i++){const diff=stateA[i]-stateB[i];sum+=diff*diff;}return Math.sqrt(sum);
+  }
+  if(metric==='cosine'){
+    let dot=0,a=0,b=0;for(let i=0;i<stateA.length;i++){dot+=stateA[i]*stateB[i];a+=stateA[i]*stateA[i];b+=stateB[i]*stateB[i];}
+    if(a===0||b===0) return NaN;return 1-dot/(Math.sqrt(a)*Math.sqrt(b));
+  }
+  return NaN;
+}
+function runTension(){
+  const a=document.getElementById('tension-a').value.split(',').map(Number);
+  const b=document.getElementById('tension-b').value.split(',').map(Number);
+  const metric=document.getElementById('tension-metric').value;
+  const val=xi(a,b,metric);
+  document.getElementById('tension-output').textContent=`ξ = ${val}`;
+  window.currentXi=val;
+}
+const xiSeries=[];
+function addXi(){
+  if(window.currentXi!==undefined){xiSeries.push(window.currentXi);}
+  const labels=xiSeries.map((_,i)=>i+1);
+  let cumulative=0;const coherence=[];xiSeries.forEach(xi=>{cumulative+=xi;coherence.push(1/(1+cumulative));});
+  if(window.tensionChart) window.tensionChart.destroy();
+  window.tensionChart=new Chart(document.getElementById('tension-chart'),{
+    type:'line',
+    data:{labels:labels,datasets:[{label:'Coherence',data:coherence,borderColor:'green',fill:false}]},
+    options:{responsive:true,scales:{y:{beginAtZero:true,max:1}}}
+  });
+}
+</script>
+</body>
+</html>

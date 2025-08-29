@@ -13,6 +13,15 @@ stabilization toolkit. It exposes several placeholder utilities:
 - **Epistemic tension**: `epistemic_tension` measures distance between
   successive state vectors.
 
+## Web Dashboard
+
+An interactive dashboard showcasing these utilities is available in
+`index.html`.  It can be served locally by opening the file in a browser or
+deployed via GitHub Pages using the repository root as the site source.  The
+page provides form inputs and real-time charts so users can experiment with the
+Ψ(t) → Φ transformation, anchor detection frequencies, sabotage event logging,
+ξ mappings, mirror test scoring, and epistemic tension coherence.
+
 ## Running the tests
 
 ```bash
