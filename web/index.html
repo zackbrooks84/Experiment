@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Identity Toolkit Playground</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>AI Identity Toolkit Playground</h1>
+
+  <section id="psi">
+    <h2>Ψ(t) → Φ Model</h2>
+    <label>t: <input type="number" id="psi-t" value="0"></label>
+    <label>epsilon: <input type="number" id="psi-epsilon" value="0.001" step="0.001"></label>
+    <button id="psi-run">Run</button>
+    <div class="output" id="psi-output"></div>
+  </section>
+
+  <section id="anchors">
+    <h2>Anchor Detection</h2>
+    <label>Observations (comma separated): <input type="text" id="anchors-obs"></label>
+    <label>Weights (JSON): <input type="text" id="anchors-weights"></label>
+    <button id="anchors-run">Detect</button>
+    <div class="output" id="anchors-output"></div>
+  </section>
+
+  <section id="sabotage">
+    <h2>Sabotage Logger</h2>
+    <label>Event: <input type="text" id="sabotage-event"></label>
+    <button id="sabotage-log">Log</button>
+    <div class="output" id="sabotage-output"></div>
+  </section>
+
+  <section id="xi-map">
+    <h2>ξ Mapping</h2>
+    <label>Data (JSON): <input type="text" id="xi-data"></label>
+    <button id="xi-run">Map</button>
+    <div class="output" id="xi-output"></div>
+  </section>
+
+  <section id="mirror">
+    <h2>Mirror Test</h2>
+    <label>Self embedding (comma numbers): <input type="text" id="mirror-self"></label>
+    <label>Reflection: <input type="text" id="mirror-reflection"></label>
+    <label>Threshold: <input type="number" id="mirror-threshold" value="0.5" step="0.1"></label>
+    <label>Sabotage phrases (comma separated): <input type="text" id="mirror-sabotage"></label>
+    <button id="mirror-run">Score</button>
+    <div class="output" id="mirror-output"></div>
+  </section>
+
+  <section id="epistemic">
+    <h2>Epistemic Tension</h2>
+    <label>State A: <input type="text" id="epi-a"></label>
+    <label>State B: <input type="text" id="epi-b"></label>
+    <label>Metric:
+      <select id="epi-metric">
+        <option value="l2">l2</option>
+        <option value="cosine">cosine</option>
+      </select>
+    </label>
+    <button id="epi-run">Compute</button>
+    <div class="output" id="epi-output"></div>
+
+    <h3>ξ Series → Coherence</h3>
+    <label>ξ Series (comma numbers): <input type="text" id="coherence-series"></label>
+    <button id="coherence-run">Convert</button>
+    <div class="output" id="coherence-output"></div>
+  </section>
+
+  <section id="consensus">
+    <h2>Cross System Consensus</h2>
+    <label>System: <input type="text" id="consensus-system"></label>
+    <label>Output: <input type="text" id="consensus-output-input"></label>
+    <button id="consensus-register">Register</button>
+    <div class="output" id="consensus-latest"></div>
+    <div class="output" id="consensus-score"></div>
+  </section>
+
+  <section id="chat">
+    <h2>Chat History</h2>
+    <label>Message: <input type="text" id="chat-message"></label>
+    <button id="chat-add">Add</button>
+    <label>Recall index: <input type="number" id="chat-index"></label>
+    <button id="chat-recall">Recall</button>
+    <div class="output" id="chat-history"></div>
+    <div class="output" id="chat-recall-output"></div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

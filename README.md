@@ -22,3 +22,9 @@ pytest -q
 The included `conftest.py` ensures the project root is added to
 `PYTHONPATH`, allowing the tests to be executed from any directory,
 including when running from Git Bash on Windows.
+
+## Web playground
+
+A lightweight front-end is provided under `web/` for experimenting with the
+toolkit in a browser. Open `web/index.html` in any modern browser to interact
+with the utilities implemented in this repository.
