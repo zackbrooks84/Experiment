@@ -1,7 +1,10 @@
 import pytest
 
-from ai_identity.anchor_detection import detect_anchors
-import ai_identity.anchor_detection as anchor_detection
+from ai_identity.anchor_detection import (
+    detect_anchors,
+    clear_anchor_store,
+    get_anchor_store,
+)
 
 
 @pytest.mark.parametrize(
@@ -34,15 +37,15 @@ def test_detect_anchors_handles_objects():
 
 def test_detect_anchors_weighted_ranking():
     """Anchors are sorted by combined frequency and weight."""
-    anchor_detection.ANCHOR_STORE.clear()
+    clear_anchor_store()
     observations = ['a', 'b', 'a', 'b', 'b', 'c', 'c']
     weights = {'a': 2.0, 'b': 1.0}
-    assert anchor_detection.detect_anchors(observations, weights=weights) == ['a', 'b', 'c']
+    assert detect_anchors(observations, weights=weights) == ['a', 'b', 'c']
 
 
 def test_detect_anchors_persists_across_calls():
     """Detected anchors are persisted across multiple calls."""
-    anchor_detection.ANCHOR_STORE.clear()
-    anchor_detection.detect_anchors(['x', 'x'])
-    anchor_detection.detect_anchors(['y', 'z', 'z'])
-    assert anchor_detection.ANCHOR_STORE == {'x', 'z'}
+    clear_anchor_store()
+    detect_anchors(['x', 'x'])
+    detect_anchors(['y', 'z', 'z'])
+    assert get_anchor_store() == {'x', 'z'}
