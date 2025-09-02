@@ -13,3 +13,16 @@ def test_consensus_scoring():
     assert consensus.consensus() == pytest.approx(2/3)
     assert not consensus.has_converged()
     assert consensus.has_converged(threshold=0.5)
+
+
+def test_reset_clears_outputs():
+    """Resetting removes all previously registered outputs."""
+    consensus = CrossSystemConsensus()
+    consensus.register("sys1", "a")
+    consensus.register("sys2", "b")
+    assert consensus.latest_outputs()
+
+    consensus.reset()
+
+    assert consensus.latest_outputs() == {}
+    assert consensus.consensus() == 0.0
