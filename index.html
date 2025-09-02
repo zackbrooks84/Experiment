@@ -13,6 +13,17 @@
   <h1>AI Identity Toolkit Dashboard</h1>
 </header>
 
+<section id="experiment-section">
+  <h2>Experiment Controls</h2>
+  <label>Custom anchor phrase: <input type="text" id="custom-anchor" placeholder="e.g., core value" /></label>
+  <label>Custom sabotage event: <input type="text" id="custom-sabotage" placeholder="e.g., anomaly detected" /></label>
+  <label>Sequence A (comma numbers): <input type="text" id="experiment-sequence-a" value="1,0,0" /></label>
+  <label>Sequence B (comma numbers): <input type="text" id="experiment-sequence-b" value="0,1,0" /></label>
+  <button onclick="runBaseline()">Run baseline</button>
+  <button onclick="runWithAnchors()">Run with anchors</button>
+  <button onclick="runSabotageScenario()">Run sabotage scenario</button>
+</section>
+
 <section id="psi-section">
   <h2>Ψ(t) → Φ Stabilisation</h2>
   <label>t: <input type="range" id="psi-t" min="0" max="10" step="0.1" value="0" oninput="document.getElementById('psi-t-val').textContent=this.value;runPsiToPhi();" /><span id="psi-t-val">0</span></label>
@@ -260,6 +271,39 @@ function runTension(){
   });
 }
 const xiSeries=[];
+
+function runBaseline(){
+  document.getElementById('tension-a').value=document.getElementById('experiment-sequence-a').value;
+  document.getElementById('tension-b').value=document.getElementById('experiment-sequence-b').value;
+  document.getElementById('anchor-observations').value='';
+  document.getElementById('sabotage-event').value='';
+  sabotageEvents.length=0;
+  sabotageSeries.length=0;
+  resistanceSeries.length=0;
+  updateSabotageChart();
+  document.getElementById('sabotage-log').textContent='';
+  document.getElementById('tension-perturb').value=0;
+  document.getElementById('tension-perturb-val').textContent='0';
+  runPsiToPhi();
+  runAnchorDetection();
+  runTension();
+}
+
+function runWithAnchors(){
+  runBaseline();
+  document.getElementById('anchor-observations').value=document.getElementById('custom-anchor').value;
+  runAnchorDetection();
+}
+
+function runSabotageScenario(){
+  runBaseline();
+  document.getElementById('sabotage-event').value=document.getElementById('custom-sabotage').value;
+  document.getElementById('sabotage-type').value='sabotage';
+  logSabotage();
+  document.getElementById('tension-perturb').value=0.5;
+  document.getElementById('tension-perturb-val').textContent='0.5';
+  runTension();
+}
 </script>
 <footer>© 2023 AI Identity Toolkit. All rights reserved.</footer>
 </body>
