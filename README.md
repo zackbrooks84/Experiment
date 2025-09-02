@@ -27,6 +27,14 @@ page provides form inputs and real-time charts so users can experiment with the
 Ψ(t) → Φ transformation, anchor detection frequencies, sabotage event logging,
 ξ mappings, mirror test scoring, and epistemic tension coherence.
 
+The dashboard includes several helpful interface features:
+
+- Off-canvas "Info" sidebar summarizing each metric.
+- Tooltips and popovers that explain controls.
+- Responsive layout powered by Bootstrap 5.
+- Session Management section to save runs, export data as JSON/CSV, and import previous sessions.
+- Buttons to download each chart as an image for offline analysis.
+
 ## Running the tests
 
 ```bash
