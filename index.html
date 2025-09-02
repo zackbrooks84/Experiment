@@ -48,7 +48,7 @@
 
 <main class="container my-4">
 <section id="experiment-section" class="mb-4">
-  <h2>Experiment Controls</h2>
+  <h2>Experiment Controls <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Experiment Controls" data-bs-content="Configure sequences and run different scenarios.">?</button></h2>
   <label>Custom anchor phrase: <input type="text" id="custom-anchor" placeholder="e.g., core value" /></label>
   <label>Custom sabotage event: <input type="text" id="custom-sabotage" placeholder="e.g., anomaly detected" /></label>
   <label>Sequence A (comma numbers): <input type="text" id="experiment-sequence-a" value="1,0,0" /></label>
@@ -59,7 +59,7 @@
 </section>
 
 <section id="psi-section" class="mb-4">
-  <h2>Ψ(t) → Φ Stabilisation</h2>
+  <h2>Ψ(t) → Φ Stabilisation <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Ψ(t) → Φ Stabilisation" data-bs-content="Adjust t and ε to see when the system stabilises.">?</button></h2>
   <label>t: <input type="range" id="psi-t" min="0" max="10" step="0.1" value="0" oninput="document.getElementById('psi-t-val').textContent=this.value;runPsiToPhi();" /><span id="psi-t-val">0</span></label>
   <label>ε: <input type="range" id="psi-epsilon" min="0.0001" max="0.01" step="0.0001" value="0.001" oninput="document.getElementById('psi-epsilon-val').textContent=this.value;runPsiToPhi();" /><span id="psi-epsilon-val">0.001</span></label>
   <button onclick="runPsiToPhi()" data-bs-toggle="tooltip" title="Calculate the stability metric Φ.">Compute Φ</button>
@@ -68,7 +68,7 @@
 </section>
 
 <section id="anchor-section" class="mb-4">
-  <h2>Anchor Detection</h2>
+  <h2>Anchor Detection <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Anchor Detection" data-bs-content="Find repeated observations above the salience threshold.">?</button></h2>
   <label>Observations (comma separated):<br /><textarea id="anchor-observations" rows="2" placeholder="e.g., apple, banana, apple" oninput="runAnchorDetection()"></textarea></label>
   <label>Salience threshold: <input type="range" id="anchor-threshold" min="1" max="5" value="2" oninput="document.getElementById('anchor-threshold-val').textContent=this.value;runAnchorDetection();" /><span id="anchor-threshold-val">2</span></label>
   <button onclick="runAnchorDetection()" data-bs-toggle="tooltip" title="Find repeated observations above the threshold.">Detect Anchors</button>
@@ -77,7 +77,7 @@
 </section>
 
 <section id="sabotage-section" class="mb-4">
-  <h2>Sabotage Logger</h2>
+  <h2>Sabotage Logger <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Sabotage Logger" data-bs-content="Record sabotage or resistance events over time.">?</button></h2>
   <label>Event: <input type="text" id="sabotage-event" placeholder="e.g., anomaly detected" /></label>
   <label>Type:
     <select id="sabotage-type">
@@ -91,14 +91,14 @@
 </section>
 
 <section id="xi-section" class="mb-4">
-  <h2>ξ Mapping</h2>
+  <h2>ξ Mapping <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="ξ Mapping" data-bs-content="Sort keys and view their mapped values.">?</button></h2>
   <label>Mapping (JSON object):<br /><textarea id="xi-input" rows="2" placeholder='{"b":2,"a":1}'>{"b":2,"a":1}</textarea></label>
   <button onclick="runXiMap()" data-bs-toggle="tooltip" title="Sort the mapping and display results.">Map</button>
   <div class="output" id="xi-output"></div>
 </section>
 
 <section id="mirror-section" class="mb-4">
-  <h2>Mirror Test Score</h2>
+  <h2>Mirror Test Score <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Mirror Test Score" data-bs-content="Compare a reflection to a self-embedding to gauge self-awareness.">?</button></h2>
   <label>Reflection:<br /><textarea id="mirror-reflection" rows="2" placeholder="e.g., I see myself in the mirror"></textarea></label>
   <label>Self Embedding (comma numbers):<br /><textarea id="mirror-embedding" rows="2" placeholder="e.g., 1,0,0">1,0,0</textarea></label>
   <button onclick="runMirrorTest()" data-bs-toggle="tooltip" title="Compute the mirror test score.">Score</button>
@@ -106,7 +106,7 @@
 </section>
 
 <section id="tension-section" class="mb-4">
-  <h2>Epistemic Tension</h2>
+  <h2>Epistemic Tension <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Epistemic Tension" data-bs-content="Measure the difference between two states using different metrics.">?</button></h2>
   <label>State A (comma numbers):<br /><textarea id="tension-a" rows="2" placeholder="e.g., 1,0,0" oninput="runTension()">1,0,0</textarea></label>
   <label>State B (comma numbers):<br /><textarea id="tension-b" rows="2" placeholder="e.g., 0,1,0" oninput="runTension()">0,1,0</textarea></label>
   <label>Perturbation intensity: <input type="range" id="tension-perturb" min="0" max="1" step="0.1" value="0" oninput="document.getElementById('tension-perturb-val').textContent=this.value;runTension();" /><span id="tension-perturb-val">0</span></label>
@@ -117,7 +117,7 @@
 </section>
 
 <section id="session-section" class="mb-4">
-  <h2>Session Management</h2>
+  <h2>Session Management <button type="button" class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="popover" data-bs-trigger="focus" title="Session Management" data-bs-content="Save runs and export or import your data.">?</button></h2>
   <label>Run name: <input type="text" id="run-name" placeholder="Run 1" /></label>
   <button onclick="saveRun()" data-bs-toggle="tooltip" title="Store the current run in the session table.">Save Run</button>
   <button onclick="exportJSON()" data-bs-toggle="tooltip" title="Download the session data as JSON.">Export JSON</button>
@@ -431,6 +431,8 @@ function downloadChartImage(id,filename){
 document.addEventListener('DOMContentLoaded', function () {
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
   tooltipTriggerList.forEach(el => new bootstrap.Tooltip(el));
+  const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+  popoverTriggerList.forEach(el => new bootstrap.Popover(el));
 });
 </script>
 <footer>© 2023 AI Identity Toolkit. All rights reserved.</footer>
