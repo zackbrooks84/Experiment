@@ -16,6 +16,18 @@ from typing import Any, Iterable, Mapping, Optional
 ANCHOR_STORE: set[Any] = set()
 
 
+def clear_anchor_store() -> None:
+    """Empty the global :data:`ANCHOR_STORE`."""
+
+    ANCHOR_STORE.clear()
+
+
+def get_anchor_store() -> set[Any]:
+    """Return a copy of the current anchor store."""
+
+    return set(ANCHOR_STORE)
+
+
 def detect_anchors(
     observations: Iterable[Any], weights: Optional[Mapping[Any, float]] = None
 ) -> list:
