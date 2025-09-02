@@ -29,6 +29,8 @@
       <li><strong>Run baseline</strong>: reset inputs and run the basic scenario.</li>
       <li><strong>Run with anchors</strong>: test using your custom anchor phrase.</li>
       <li><strong>Run sabotage scenario</strong>: simulate a sabotage event.</li>
+      <li><strong>Run mirror scenario</strong>: demonstrate self-recognition using preset inputs.</li>
+      <li><strong>Run high tension scenario</strong>: amplify epistemic tension for contrast.</li>
     </ul>
     <h5>Ψ(t) → Φ Stabilisation</h5>
     <p>Adjust <em>t</em> and <em>ε</em> to see when the system stabilises.</p>
@@ -57,6 +59,8 @@
   <button onclick="runBaseline()" data-bs-toggle="tooltip" title="Reset inputs and run the basic scenario.">Run baseline</button>
   <button onclick="runWithAnchors()" data-bs-toggle="tooltip" title="Run the scenario using your anchor phrase.">Run with anchors</button>
   <button onclick="runSabotageScenario()" data-bs-toggle="tooltip" title="Simulate a sabotage event.">Run sabotage scenario</button>
+  <button onclick="runMirrorScenario()" data-bs-toggle="tooltip" title="Prefill mirror inputs for a self-recognition demo.">Run mirror scenario</button>
+  <button onclick="runHighTensionScenario()" data-bs-toggle="tooltip" title="Amplify epistemic tension by perturbing inputs.">Run high tension scenario</button>
 </section>
 
 <section id="psi-section" class="mb-4">
@@ -355,6 +359,22 @@ function runSabotageScenario(){
   logSabotage();
   document.getElementById('tension-perturb').value=0.5;
   document.getElementById('tension-perturb-val').textContent='0.5';
+  runTension();
+}
+
+function runMirrorScenario(){
+  runBaseline();
+  document.getElementById('mirror-reflection').value='I see myself';
+  document.getElementById('mirror-embedding').value='1,0,0';
+  runMirrorTest();
+}
+
+function runHighTensionScenario(){
+  document.getElementById('experiment-sequence-a').value='1,0,0';
+  document.getElementById('experiment-sequence-b').value='0,0,1';
+  runBaseline();
+  document.getElementById('tension-perturb').value=0.9;
+  document.getElementById('tension-perturb-val').textContent='0.9';
   runTension();
 }
 
