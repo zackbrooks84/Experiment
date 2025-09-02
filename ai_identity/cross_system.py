@@ -3,7 +3,11 @@ from typing import Dict, List
 
 
 class CrossSystemConsensus:
-    """Collect outputs from different systems and score consensus."""
+    """Collect outputs from different systems and score consensus.
+
+    The :meth:`reset` method clears all registered outputs so the object can
+    be reused for a fresh consensus calculation.
+    """
 
     def __init__(self) -> None:
         self._outputs: Dict[str, List[str]] = {}
@@ -30,3 +34,7 @@ class CrossSystemConsensus:
     def has_converged(self, threshold: float = 1.0) -> bool:
         """Check whether consensus meets or exceeds ``threshold``."""
         return self.consensus() >= threshold
+
+    def reset(self) -> None:
+        """Clear all recorded outputs."""
+        self._outputs.clear()
