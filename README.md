@@ -32,6 +32,7 @@ The dashboard includes several helpful interface features:
 - Off-canvas "Info" sidebar summarizing each metric.
 - Tooltips and popovers that explain controls.
 - Responsive layout powered by Bootstrap 5.
+- Plotly-powered Ψ→Φ chart with interactive zooming and panning.
 - Session Management section to save runs, export data as JSON/CSV, and import previous sessions.
 - Buttons to download each chart as an image for offline analysis.
 
