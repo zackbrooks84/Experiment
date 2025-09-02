@@ -82,6 +82,23 @@
   <canvas id="tension-chart" height="100"></canvas>
 </section>
 
+<section id="session-section">
+  <h2>Session Management</h2>
+  <label>Run name: <input type="text" id="run-name" placeholder="Run 1" /></label>
+  <button onclick="saveRun()">Save Run</button>
+  <button onclick="exportJSON()">Export JSON</button>
+  <button onclick="exportCSV()">Export CSV</button>
+  <input type="file" id="import-file" accept="application/json" />
+  <button onclick="importJSON()">Import JSON</button>
+  <div class="output" id="session-output"></div>
+  <table id="session-table"></table>
+  <h3>Chart Exports</h3>
+  <button onclick="downloadChartImage('psi-chart','psi_chart.png')">Ψ→Φ Chart</button>
+  <button onclick="downloadChartImage('anchor-chart','anchor_chart.png')">Anchor Chart</button>
+  <button onclick="downloadChartImage('sabotage-chart','sabotage_chart.png')">Sabotage Chart</button>
+  <button onclick="downloadChartImage('tension-chart','tension_chart.png')">Tension Chart</button>
+</section>
+
 <script>
 // Ψ(t) → Φ
 function psiToPhi(t, epsilon){
@@ -271,6 +288,7 @@ function runTension(){
   });
 }
 const xiSeries=[];
+const sessionRuns=[];
 
 function runBaseline(){
   document.getElementById('tension-a').value=document.getElementById('experiment-sequence-a').value;
@@ -303,6 +321,76 @@ function runSabotageScenario(){
   document.getElementById('tension-perturb').value=0.5;
   document.getElementById('tension-perturb-val').textContent='0.5';
   runTension();
+}
+
+function saveRun(){
+  const name=document.getElementById('run-name').value||`Run ${sessionRuns.length+1}`;
+  const run={name:name,xiSeries:[...xiSeries],sabotageEvents:[...sabotageEvents]};
+  sessionRuns.push(run);
+  renderSessionTable();
+}
+
+function renderSessionTable(){
+  const table=document.getElementById('session-table');
+  table.innerHTML='<tr><th>Run</th><th>Final ξ</th><th>Events</th></tr>';
+  let sum=0;
+  sessionRuns.forEach(r=>{
+    const last=r.xiSeries[r.xiSeries.length-1]||0;
+    sum+=last;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r.name}</td><td>${last.toFixed(2)}</td><td>${r.sabotageEvents.length}</td>`;
+    table.appendChild(tr);
+  });
+  const avg=sessionRuns.length?sum/sessionRuns.length:0;
+  document.getElementById('session-output').textContent=`Average ξ: ${avg.toFixed(2)}`;
+}
+
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(sessionRuns,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='session_data.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function exportCSV(){
+  let csv='Run,FinalXi,Events\n';
+  sessionRuns.forEach(r=>{
+    const last=r.xiSeries[r.xiSeries.length-1]||0;
+    csv+=`${r.name},${last},${r.sabotageEvents.length}\n`;
+  });
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='session_data.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(){
+  const file=document.getElementById('import-file').files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      sessionRuns.length=0;
+      data.forEach(r=>sessionRuns.push(r));
+      renderSessionTable();
+    }catch(err){
+      alert('Invalid JSON');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function downloadChartImage(id,filename){
+  const canvas=document.getElementById(id);
+  const link=document.createElement('a');
+  link.href=canvas.toDataURL('image/png');
+  link.download=filename;
+  link.click();
 }
 </script>
 <footer>© 2023 AI Identity Toolkit. All rights reserved.</footer>
